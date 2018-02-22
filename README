@@ -1,0 +1,82 @@
+// Author : Fahad Zafar
+// Copyright : 2014
+
+// This code is submitted to 
+// Fred Bitter
+// Apple
+// 408-497-2751
+// fbitter@apple.com
+
+// Soley to solve the following problem
+
+Technical Exercise:
+Task: Compute total number of unique lines across a data set of 1000 gzipped text files.
+
+Example: If every file has two lines,  "this is line1" and "this a line2", then the total count of lines is 2000, and total number of unique lines is 2.
+
+Details:
+-  We have 1000 machines where each machine has one gzipped text file with an approximate size of 50GB. The file on each machine is /0/data/foo.txt.gz
+- The 1000 machines are named data1, data2,..data1000.
+- Data is ASCII text. 
+- Additionally, we have 11 machines named res1, res2…res11
+- Each of 1011 machines has 12 1TB disk drives mounted (/0/data, /1/data,../11/data). /1/data to /11/data mount points are empty on all machines. 
+- Each machine has 128GB of RAM
+- Each machine can 'talk' to each other via ssh without login credentials.
+- Assume that each machine runs same linux/unix OS of your choosing.
+- You can use any programming language/technology
+
+// RUN DETAILS
+// mpich2 or openmpi must be installed.
+// Make command:  mpic++ -L/usr/local/lib findUniqueNumber.cpp -o findUniqueNumber
+// Command used to run this code :  mpirun -n 1000 --hostfile ~/nodes_to_use findUniqueNumber
+
+// Main File:
+// findUniqueNumber.cpp
+
+// Algorithm details
+// I use the MPI (Message Passing Interface) library and C++ to solve this problem.
+// The number of cores should be passed in the host file. Each core reads its files, uncompresses it if required, and then
+// hashes each entry per line in the file. The core keeps a hashmap for each entry and then all the corestrade amongst each other
+// in order to find the unique entries.
+// The merging is optimized and for a 1000 cores only needs ceil(ln(1000)) merges.
+// The code is synchrinzed using the Barrier commands provided by the library.
+// Merge example for a 10 core execution is as follows:
+// In the end a complete run time is also printed on the screen.
+// Some screen-shots of the execxution are also attached in the source folder.
+
+THIS IS THE OUTPUT FROM MY PROGRAM WHEN RUN FOR 10 nodes using the following command.
+ mpirun -n 10 --hostfile ~/fast_jbhost_different findUniqueNumber
+
+-------Merge information------------------------
+No. of merges = 4
+******Merge Stage : 1
+0 merges with 1.
+2 merges with 3.
+4 merges with 5.
+6 merges with 7.
+8 merges with 9.
+******Merge Stage : 2
+0 merges with 2.
+4 merges with 6.
+8 stands alone. 
+******Merge Stage : 3
+0 merges with 4.
+8 stands alone. 
+******Merge Stage : 4
+0 merges with 8.
+
+In the end the code prints the final unique records.
+ >>>>>>>>> Final unique records:109
+
+
+More debug information can be seen by defining the DEBUG symbol in findUniqueNumber.cpp
+
+
+// DISCLAIMER
+// I acknowledge that I have written the whole code by myself without any help from a third party.
+// I have used the perceus cluster (account/ip: fahad@150.148.3.18) which is available to me since i am
+// a graduate research assistant sponsored by the FDA. I have prior experience working with MPI and 
+// professional grade experience in writing code using C++. It took me under 3 hours to write this code
+// and check using a test data file.
+
+// Fahad Zafar

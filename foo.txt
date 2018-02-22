@@ -1,0 +1,129 @@
+// Author: Fahad Zafar
+// Copyright 2014
+// An old code file i am using as test data.
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+
+ struct tagBITMAPFILEHEADER {
+  unsigned char  bfType[2];
+  unsigned int   bfSize;
+  unsigned short    bfReserved1;
+  unsigned short    bfReserved2;
+  unsigned int   bfOffBits;
+};
+ struct tagBITMAPINFOHEADER {
+	int biSize;		  // size of structure, in bytes
+	int  biWidth;		 // bitmap width, in pixels
+	int  biHeight;		// bitmap height, in pixels
+	short   biPlanes;		// see below
+	short   biBitCount;	  // see below
+	int  biCompression;   // see below
+	int  biSizeImage;	 // see below
+	int  biXPelsPerMeter; // see below
+	int  biYPelsPerMeter; // see below
+	int  biClrUsed;	   // see below
+	int  biClrImportant;  // see below
+} BITMAPINFOHEADER;
+
+
+ struct bmp_file_header { 
+	 /*
+    unsigned short   type; 
+    unsigned long    size; 
+    unsigned long    reserved; 
+    unsigned long    bitmap_offset;
+    unsigned long    header_size; 
+    signed   long    width; 
+    signed   long    height; 
+    unsigned short   planes; 
+    unsigned short   bits_per_pixel; 
+    unsigned long    compression; 
+    unsigned long    bitmap_size;
+    signed   long    horizontal_resolution;
+    signed   long    vertical_resolution;
+    unsigned long    num_colors; 
+    unsigned long    num_important_colors; */
+
+unsigned int header_sz;
+
+  int width;
+  int height;
+ unsigned short nplanes;
+  unsigned short bitspp;
+  unsigned int compress_type;
+  unsigned int bmp_bytesz;
+  int hres;
+  int vres;
+  unsigned int ncolors;
+  unsigned int nimpcolors;
+  
+}; 
+
+class myBitmap{
+	
+	public:
+	string filename;
+	ifstream i_myfile;
+	ofstream o_myfile;
+	
+	
+	
+	bmp_file_header header;
+	tagBITMAPFILEHEADER new_header1;
+	tagBITMAPINFOHEADER new_header2;
+	
+	// CONSTRUCTOR
+	myBitmap(string filen){
+	filename = filen;
+	i_myfile.open((char*)filename.c_str(),ios::in );
+	}
+	// DESTRUCTOR
+	~myBitmap(){
+	i_myfile.close();
+	o_myfile.close();
+	}
+	// READ BITMAP HEADER
+	void read_header(){
+	i_myfile.read((char *) &new_header1, sizeof(new_header1));
+	i_myfile.read((char *) &new_header2, sizeof(new_header2));	
+	print_header();
+	
+	}
+	// PRINT HEADER
+	void print_header(){
+	
+	cout<<"----- Bitmap File Header ----"<<endl;
+	cout<<"Size of short:"<<sizeof(short)<<endl;
+	cout<<new_header1.bfType<<endl;
+	cout<<new_header1.bfSize<<endl;
+	cout<<new_header1.bfReserved1<<endl;
+	cout<<new_header1.bfReserved2<<endl;
+	cout<<new_header1.bfOffBits<<endl;
+	
+	cout<<"----- Bitmap Info Header ----"<<endl;
+	
+	cout<<"***Width: "<<new_header2.biWidth<<endl; 
+    cout<<"***Height: "<<new_header2.biHeight<<endl; 
+	
+	/*cout<<"Type: "<<header.type<<endl;;
+    cout<<"Size: "<<header.size<<endl<<endl; 
+    cout<<"reserved: "<<header.reserved<<endl; 
+    cout<<"bitmap-offset: "<<header.bitmap_offset<<endl;
+    cout<<"header size: "<<header.header_size<<endl; 
+	cout<<"***Width: "<<header.width<<endl; 
+    cout<<"***Height: "<<header.height<<endl; 
+    cout<<"planes: "<<header.planes<<endl; 
+    cout<<"bits-per-pixel: "<<header.bits_per_pixel<<endl; 
+    cout<<"compression: "<<header.compression<<endl; 
+    cout<<"bitmap-size: "<<header.bitmap_size<<endl;
+    cout<<"horizontal-resolution: "<<header.horizontal_resolution<<endl;
+    cout<<"vertical-resolution: "<<header.vertical_resolution<<endl;
+    cout<<"num-colors: "<<header.num_colors<<endl; 
+    cout<<"num-important-colors: "<<header.num_important_colors<<endl; 
+	*/cout<<"  ---------------------------------"<<endl;
+	}
+	
+};
